@@ -1,31 +1,35 @@
 using UnityEngine;
 
-public class Launcher : MonoBehaviour
+public class LauncherWithSpin : MonoBehaviour
 {
-    public GameObject ballPrefab; // Inspector‚©‚çİ’è‚·‚é‹…‚ÌƒvƒŒƒnƒu
-    public float launchVelocity = 10f; // ”­Ë‘¬“x
+    public GameObject ballPrefab; // Inspectorã‹ã‚‰è¨­å®šã™ã‚‹çƒã®ãƒ—ãƒ¬ãƒãƒ–
+    public float launchVelocity = 10f; // ç™ºå°„é€Ÿåº¦
+    public float spinPower = -1f; // å›è»¢åŠ›
 
     void Update()
     {
-        // ƒGƒ“ƒ^[ƒL[‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+        // ã‚¨ãƒ³ã‚¿ãƒ¼ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã¨ã
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            LaunchBall();
+            LaunchBallWithSpin();
         }
     }
 
-    void LaunchBall()
+    void LaunchBallWithSpin()
     {
-        // ƒvƒŒƒnƒu‚©‚ç‹…‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»‚µAŒ»İ‚ÌƒIƒuƒWƒFƒNƒg‚ÌˆÊ’u‚Æ‰ñ“]‚Åİ’è
-        GameObject ball = Instantiate(ballPrefab, transform.position, transform.rotation);
+        // ãƒ—ãƒ¬ãƒãƒ–ã‹ã‚‰çƒã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã—ã€ç¾åœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®ã§è¨­å®š
+        GameObject ball = Instantiate(ballPrefab, transform.position, Quaternion.identity);
 
-        // Rigidbody‚ğæ“¾
+        // Rigidbodyã‚’å–å¾—
         Rigidbody rb = ball.GetComponent<Rigidbody>();
 
-        // Y²‚ÆZ²‚Ì—¼•û‚É45“x‰ñ“]‚µ‚½ƒxƒNƒgƒ‹‚ğ¶¬
-        Vector3 launchDirection = (Quaternion.Euler(-45, 0, 45) * transform.forward).normalized;
+        // Yè»¸ã¨Zè»¸ã®ä¸¡æ–¹ã«45åº¦å›è»¢ã—ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’ç”Ÿæˆ
+        Vector3 launchDirection = Quaternion.Euler(-60, 0, 0) * Vector3.forward;
 
-        // Rigidbody‚É—Í‚ğ‰Á‚¦‚Ä”­Ë
-        rb.velocity = launchDirection * launchVelocity;
+        // Rigidbodyã«åŠ›ã‚’åŠ ãˆã¦ç™ºå°„
+        rb.AddForce(launchDirection * launchVelocity, ForceMode.VelocityChange);
+
+        // Xè»¸ã§å›è»¢ã™ã‚‹ãƒˆãƒ«ã‚¯ã‚’åŠ ãˆã‚‹
+        rb.AddTorque(Vector3.right * spinPower, ForceMode.Impulse);
     }
 }
